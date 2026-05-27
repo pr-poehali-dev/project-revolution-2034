@@ -164,9 +164,9 @@ function GlobeMesh() {
       <points geometry={dotPoints}>
         <pointsMaterial
           color="#ffffff"
-          size={0.06}
+          size={0.09}
           transparent
-          opacity={0.55}
+          opacity={0.85}
           sizeAttenuation
         />
       </points>
@@ -176,11 +176,21 @@ function GlobeMesh() {
 
 export function Globe() {
   return (
-    <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none" }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100svh",
+        zIndex: 2,
+        pointerEvents: "none",
+      }}
+    >
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: "transparent" }}
+        style={{ width: "100%", height: "100%", background: "transparent" }}
       >
         <GlobeMesh />
       </Canvas>
