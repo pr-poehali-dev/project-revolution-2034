@@ -78,14 +78,12 @@ function buildContinents(r: number): THREE.BufferGeometry {
   for (const ring of CONTINENTS) {
     const n = ring.length;
     if (n < 3) continue;
-    let cLon = 0, cLat = 0;
-    for (const [lo, la] of ring) { cLon += lo; cLat += la; }
-    cLon /= n; cLat /= n;
-    const c = ll2v(cLon, cLat, r);
-    for (let i = 0; i < n - 1; i++) {
+    // Fan-триангуляция от первой точки (не от центра масс — это давало артефакты)
+    const origin = ll2v(ring[0][0], ring[0][1], r);
+    for (let i = 1; i < n - 1; i++) {
       const a = ll2v(ring[i][0], ring[i][1], r);
       const b = ll2v(ring[i + 1][0], ring[i + 1][1], r);
-      pos.push(c.x, c.y, c.z, a.x, a.y, a.z, b.x, b.y, b.z);
+      pos.push(origin.x, origin.y, origin.z, a.x, a.y, a.z, b.x, b.y, b.z);
     }
   }
   const geo = new THREE.BufferGeometry();
