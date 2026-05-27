@@ -19,6 +19,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
         width="56"
         height="36"
         preserveAspectRatio="xMidYMid meet"
+        style={{ filter: "invert(1)" }}
       />
 
       {/* Main text */}
