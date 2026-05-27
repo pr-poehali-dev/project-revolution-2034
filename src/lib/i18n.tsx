@@ -77,6 +77,19 @@ const translations = {
         errorText: "Не удалось отправить. Попробуйте ещё раз.",
       },
     },
+    footer: {
+      description: "Международная торговая компания. Выстраиваем надёжные связи между рынками по всему миру.",
+      nav: "Навигация",
+      links: [
+        { label: "О компании", href: "#about" },
+        { label: "Направления", href: "#directions" },
+        { label: "Рынки", href: "#markets" },
+        { label: "Контакты", href: "#contact" },
+      ],
+      contactsTitle: "Контакты",
+      email: "real.group2020@mail.ru",
+      copy: "© 2024 Реал Групп. Все права защищены.",
+    },
   },
   en: {
     nav: {
@@ -151,6 +164,19 @@ const translations = {
         successText: "We've received your message and will be in touch shortly.",
         errorText: "Failed to send. Please try again.",
       },
+    },
+    footer: {
+      description: "International trading company. Building reliable connections between markets around the world.",
+      nav: "Navigation",
+      links: [
+        { label: "About", href: "#about" },
+        { label: "Services", href: "#directions" },
+        { label: "Markets", href: "#markets" },
+        { label: "Contacts", href: "#contact" },
+      ],
+      contactsTitle: "Contacts",
+      email: "real.group2020@mail.ru",
+      copy: "© 2024 Real Group. All rights reserved.",
     },
   },
 };
