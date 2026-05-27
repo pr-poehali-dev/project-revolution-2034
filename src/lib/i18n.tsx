@@ -60,6 +60,23 @@ const translations = {
         { value: "24/7", label: "поддержка" },
       ],
     },
+    contact: {
+      pill: "КОНТАКТЫ",
+      title: "Начнём сотрудничество",
+      subtitle: "Оставьте заявку — мы свяжемся с вами в течение одного рабочего дня",
+      form: {
+        name: "Ваше имя",
+        company: "Компания",
+        email: "Email",
+        message: "Сообщение",
+        messagePlaceholder: "Расскажите о вашем запросе — товар, направление, объёмы...",
+        submit: "Отправить заявку",
+        sending: "Отправляем...",
+        successTitle: "Заявка отправлена!",
+        successText: "Мы получили ваше сообщение и свяжемся с вами в ближайшее время.",
+        errorText: "Не удалось отправить. Попробуйте ещё раз.",
+      },
+    },
   },
   en: {
     nav: {
@@ -117,6 +134,23 @@ const translations = {
         { value: "4", label: "services" },
         { value: "24/7", label: "support" },
       ],
+    },
+    contact: {
+      pill: "CONTACTS",
+      title: "Let's start working together",
+      subtitle: "Leave a request — we'll get back to you within one business day",
+      form: {
+        name: "Your name",
+        company: "Company",
+        email: "Email",
+        message: "Message",
+        messagePlaceholder: "Tell us about your request — product, direction, volumes...",
+        submit: "Send Request",
+        sending: "Sending...",
+        successTitle: "Request sent!",
+        successText: "We've received your message and will be in touch shortly.",
+        errorText: "Failed to send. Please try again.",
+      },
     },
   },
 };
