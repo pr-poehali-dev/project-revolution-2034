@@ -192,17 +192,17 @@ function GlobeMesh() {
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
         <meshStandardMaterial
-          color="#1a1a1a"
+          color="#4a4a4a"
           roughness={0.3}
-          metalness={0.7}
+          metalness={0.6}
         />
       </mesh>
       {/* Материки — светло-серые поверх шара */}
       <mesh geometry={continentGeo}>
         <meshStandardMaterial
-          color="#b0b0b0"
-          roughness={0.5}
-          metalness={0.3}
+          color="#e0e0e0"
+          roughness={0.4}
+          metalness={0.2}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -231,11 +231,9 @@ export function Globe() {
       >
         <color attach="background" args={["#000000"]} />
         {/* Главный блик сверху-слева как на референсе */}
-        <directionalLight position={[-3, 4, 3]} intensity={3} color="#ffffff" />
-        {/* Мягкий fill-свет справа */}
-        <directionalLight position={[4, -1, 2]} intensity={0.4} color="#aaaacc" />
-        {/* Ambient чтобы тёмная сторона не была полностью чёрной */}
-        <ambientLight intensity={0.08} />
+        <directionalLight position={[-3, 4, 3]} intensity={4} color="#ffffff" />
+        <directionalLight position={[4, -1, 2]} intensity={1.0} color="#ccccdd" />
+        <ambientLight intensity={0.4} />
         <GlobeMesh />
       </Canvas>
     </div>
