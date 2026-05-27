@@ -42,7 +42,7 @@ export function Contact() {
     <section id="contact" className="py-24 md:py-36 relative z-10 bg-background">
       {/* world map background */}
       <div
-        className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.15] pointer-events-none"
+        className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.3] pointer-events-none"
         style={{ backgroundImage: "url('https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/45c723e6-57c7-448c-bcd0-09d3a9ccac9c.png')" }}
       />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
