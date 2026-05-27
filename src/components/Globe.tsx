@@ -37,10 +37,10 @@ function toXYZ(lat: number, lon: number, r: number): THREE.Vector3 {
 function GlobeMesh() {
   const groupRef = useRef<THREE.Group>(null);
 
-  const dotPoints = useMemo(() => {
+  const landPoints = useMemo(() => {
     const r = 2.0;
     const pts: THREE.Vector3[] = [];
-    const step = 2.5;
+    const step = 2.0;
     for (let lat = -88; lat <= 88; lat += step) {
       for (let lon = -180; lon < 180; lon += step) {
         if (isLand(lat, lon)) {
@@ -51,40 +51,33 @@ function GlobeMesh() {
     return new THREE.BufferGeometry().setFromPoints(pts);
   }, []);
 
-  const gridPoints = useMemo(() => {
-    const r = 2.01;
+  const oceanPoints = useMemo(() => {
+    const r = 2.0;
     const pts: THREE.Vector3[] = [];
-    const segments = 80;
-    for (let lat = -80; lat <= 80; lat += 20) {
-      for (let j = 0; j < segments; j++) {
-        const lon1 = -180 + (360 / segments) * j;
-        const lon2 = -180 + (360 / segments) * (j + 1);
-        pts.push(toXYZ(lat, lon1, r));
-        pts.push(toXYZ(lat, lon2, r));
-      }
-    }
-    for (let lon = -180; lon < 180; lon += 20) {
-      for (let j = 0; j < segments; j++) {
-        const lat1 = -90 + (180 / segments) * j;
-        const lat2 = -90 + (180 / segments) * (j + 1);
-        pts.push(toXYZ(lat1, lon, r));
-        pts.push(toXYZ(lat2, lon, r));
+    const step = 5.0;
+    for (let lat = -88; lat <= 88; lat += step) {
+      for (let lon = -180; lon < 180; lon += step) {
+        if (!isLand(lat, lon)) {
+          pts.push(toXYZ(lat, lon, r));
+        }
       }
     }
     return new THREE.BufferGeometry().setFromPoints(pts);
   }, []);
 
   useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.15;
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.12;
   });
 
   return (
     <group ref={groupRef}>
-      <lineSegments geometry={gridPoints}>
-        <lineBasicMaterial color="#ffffff" transparent opacity={0.05} />
-      </lineSegments>
-      <points geometry={dotPoints}>
-        <pointsMaterial color="#ffffff" size={0.035} transparent opacity={1} sizeAttenuation />
+      {/* Океан — едва видимые точки, чтобы шар читался как сфера */}
+      <points geometry={oceanPoints}>
+        <pointsMaterial color="#ffffff" size={0.02} transparent opacity={0.12} sizeAttenuation />
+      </points>
+      {/* Суша — яркие точки как в лого */}
+      <points geometry={landPoints}>
+        <pointsMaterial color="#ffffff" size={0.025} transparent opacity={0.95} sizeAttenuation />
       </points>
     </group>
   );
