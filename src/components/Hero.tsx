@@ -3,9 +3,11 @@ import { Pill } from "./Pill";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Header } from "./Header";
+import { useLang } from "@/lib/i18n";
 
 export function Hero() {
   const [hovering, setHovering] = useState(false);
+  const { t } = useLang();
 
   return (
     <div className="flex flex-col h-svh justify-between relative z-10">
@@ -13,13 +15,13 @@ export function Hero() {
       <Header />
 
       <div className="pb-16 mt-auto text-center relative">
-        <Pill className="mb-6">МЕЖДУНАРОДНАЯ ТОРГОВЛЯ</Pill>
+        <Pill className="mb-6">{t.hero.pill}</Pill>
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-sentient">
-          Реал Групп — <br />
-          <i className="font-light">глобальная</i> торговля
+          {t.hero.title1} <br />
+          <i className="font-light">{t.hero.title2}</i> {t.hero.title3}
         </h1>
         <p className="font-mono text-sm sm:text-base text-foreground/60 text-balance mt-8 max-w-[440px] mx-auto">
-          Выстраиваем надёжные торговые связи между странами — быстро, прозрачно и на выгодных условиях
+          {t.hero.subtitle}
         </p>
 
         <a className="contents max-sm:hidden" href="#contact">
@@ -28,7 +30,7 @@ export function Hero() {
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
           >
-            [Начать сотрудничество]
+            [{t.hero.button}]
           </Button>
         </a>
         <a className="contents sm:hidden" href="#contact">
@@ -38,7 +40,7 @@ export function Hero() {
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
           >
-            [Начать сотрудничество]
+            [{t.hero.button}]
           </Button>
         </a>
       </div>

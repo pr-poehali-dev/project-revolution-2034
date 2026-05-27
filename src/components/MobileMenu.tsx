@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useLang } from "@/lib/i18n";
 
 interface MobileMenuProps {
   className?: string;
@@ -9,12 +10,13 @@ interface MobileMenuProps {
 
 export const MobileMenu = ({ className }: MobileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { lang, setLang, t } = useLang();
 
   const menuItems = [
-    { name: "О компании", href: "#about" },
-    { name: "Направления", href: "#directions" },
-    { name: "Рынки", href: "#markets" },
-    { name: "Контакты", href: "#contact" },
+    { name: t.nav.about, href: "#about" },
+    { name: t.nav.directions, href: "#directions" },
+    { name: t.nav.markets, href: "#markets" },
+    { name: t.nav.contact, href: "#contact" },
   ];
 
   const handleLinkClick = () => {
@@ -67,14 +69,20 @@ export const MobileMenu = ({ className }: MobileMenuProps) => {
               </a>
             ))}
 
-            <div className="mt-6">
+            <div className="mt-6 flex items-center gap-x-6">
               <a
                 href="#contact"
                 onClick={handleLinkClick}
                 className="inline-block text-xl font-mono uppercase text-primary transition-colors ease-out duration-150 hover:text-primary/80 py-2"
               >
-                Связаться
+                {t.nav.cta}
               </a>
+              <button
+                onClick={() => setLang(lang === "ru" ? "en" : "ru")}
+                className="text-xl font-mono uppercase text-foreground/40 hover:text-foreground/80 transition-colors ease-out duration-150 border border-foreground/20 hover:border-foreground/50 rounded px-3 py-1"
+              >
+                {lang === "ru" ? "EN" : "RU"}
+              </button>
             </div>
           </nav>
         </Dialog.Content>
