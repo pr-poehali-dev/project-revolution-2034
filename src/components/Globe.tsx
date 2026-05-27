@@ -94,15 +94,22 @@ function GlobeMesh({ geojson }: { geojson: GeoJSON | null }) {
 
   return (
     <group ref={groupRef}>
+      {/* Океан — белый */}
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
-        <meshBasicMaterial color="#1c1c2e" />
+        <meshBasicMaterial color="#ffffff" />
       </mesh>
+      {/* Материки — чёрные */}
       {continentGeo && (
         <mesh geometry={continentGeo}>
-          <meshBasicMaterial color="#d8d8d8" side={THREE.FrontSide} />
+          <meshBasicMaterial color="#111111" side={THREE.FrontSide} />
         </mesh>
       )}
+      {/* Тонкий контур по краю */}
+      <mesh>
+        <sphereGeometry args={[2.03, 64, 64]} />
+        <meshBasicMaterial color="#111111" side={THREE.BackSide} />
+      </mesh>
     </group>
   );
 }
@@ -129,7 +136,7 @@ export function Globe() {
         width: "100%",
         height: "100svh",
         zIndex: 0,
-        background: "#000",
+        background: "#ffffff",
         pointerEvents: "none",
       }}
     >
@@ -138,7 +145,7 @@ export function Globe() {
         gl={{ antialias: true, alpha: false }}
         style={{ width: "100%", height: "100%" }}
       >
-        <color attach="background" args={["#000000"]} />
+        <color attach="background" args={["#ffffff"]} />
         <GlobeMesh geojson={geojson} />
       </Canvas>
     </div>
