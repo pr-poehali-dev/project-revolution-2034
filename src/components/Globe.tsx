@@ -1,6 +1,5 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 const MAP_URL =
@@ -8,7 +7,13 @@ const MAP_URL =
 
 function GlobeMesh() {
   const groupRef = useRef<THREE.Group>(null);
-  const texture = useTexture(MAP_URL);
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("anonymous");
+    loader.load(MAP_URL, (tex) => setTexture(tex));
+  }, []);
 
   useFrame((_, delta) => {
     if (groupRef.current) groupRef.current.rotation.y += delta * 0.1;
@@ -18,27 +23,34 @@ function GlobeMesh() {
     <group ref={groupRef}>
       <mesh>
         <sphereGeometry args={[2.2, 64, 64]} />
-        <meshStandardMaterial color="#000000" transparent opacity={0.18} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.15} />
       </mesh>
-      <mesh>
-        <sphereGeometry args={[2.21, 64, 64]} />
-        <meshStandardMaterial
-          map={texture}
-          transparent
-          opacity={0.55}
-          alphaTest={0.01}
-          depthWrite={false}
-          onBeforeCompile={(shader) => {
-            shader.fragmentShader = shader.fragmentShader.replace(
-              "#include <color_fragment>",
-              `#include <color_fragment>
-              float brightness = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
-              diffuseColor.a *= brightness;
-              diffuseColor.rgb = vec3(1.0);`
-            );
-          }}
-        />
-      </mesh>
+
+      {texture ? (
+        <mesh>
+          <sphereGeometry args={[2.22, 64, 64]} />
+          <meshBasicMaterial
+            map={texture}
+            transparent
+            opacity={0.5}
+            depthWrite={false}
+            onBeforeCompile={(shader) => {
+              shader.fragmentShader = shader.fragmentShader.replace(
+                "#include <color_fragment>",
+                `#include <color_fragment>
+                float brightness = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+                diffuseColor.a *= brightness;
+                diffuseColor.rgb = vec3(1.0);`
+              );
+            }}
+          />
+        </mesh>
+      ) : (
+        <mesh>
+          <sphereGeometry args={[2.22, 32, 32]} />
+          <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.08} />
+        </mesh>
+      )}
     </group>
   );
 }
@@ -58,7 +70,7 @@ export function Globe() {
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={1.2} />
+        <ambientLight intensity={1.5} />
         <GlobeMesh />
       </Canvas>
     </div>
