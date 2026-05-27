@@ -191,18 +191,11 @@ function GlobeMesh() {
       {/* Основной шар — тёмно-серый океан */}
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
-        <meshStandardMaterial
-          color="#4a4a4a"
-          roughness={0.3}
-          metalness={0.6}
-        />
+        <meshBasicMaterial color="#000000" />
       </mesh>
-      {/* Материки — светло-серые поверх шара */}
       <mesh geometry={continentGeo}>
-        <meshStandardMaterial
-          color="#e0e0e0"
-          roughness={0.4}
-          metalness={0.2}
+        <meshBasicMaterial
+          color="#ffffff"
           side={THREE.DoubleSide}
         />
       </mesh>
