@@ -180,7 +180,7 @@ function buildContinents(r: number): THREE.BufferGeometry {
 
 function GlobeMesh() {
   const groupRef = useRef<THREE.Group>(null);
-  const continentGeo = useMemo(() => buildContinents(2.01), []);
+  const continentGeo = useMemo(() => buildContinents(2.015), []);
 
   useFrame((_, delta) => {
     if (groupRef.current) groupRef.current.rotation.y += delta * 0.1;
@@ -188,14 +188,23 @@ function GlobeMesh() {
 
   return (
     <group ref={groupRef}>
-      {/* Чёрный океан */}
+      {/* Основной шар — тёмно-серый океан */}
       <mesh>
-        <sphereGeometry args={[2.0, 64, 64]} />
-        <meshBasicMaterial color="#000000" side={THREE.BackSide} />
+        <sphereGeometry args={[2.0, 128, 128]} />
+        <meshStandardMaterial
+          color="#1a1a1a"
+          roughness={0.3}
+          metalness={0.7}
+        />
       </mesh>
-      {/* Белые материки */}
+      {/* Материки — светло-серые поверх шара */}
       <mesh geometry={continentGeo}>
-        <meshBasicMaterial color="#ffffff" side={THREE.DoubleSide} />
+        <meshStandardMaterial
+          color="#b0b0b0"
+          roughness={0.5}
+          metalness={0.3}
+          side={THREE.DoubleSide}
+        />
       </mesh>
     </group>
   );
@@ -221,6 +230,12 @@ export function Globe() {
         style={{ width: "100%", height: "100%" }}
       >
         <color attach="background" args={["#000000"]} />
+        {/* Главный блик сверху-слева как на референсе */}
+        <directionalLight position={[-3, 4, 3]} intensity={3} color="#ffffff" />
+        {/* Мягкий fill-свет справа */}
+        <directionalLight position={[4, -1, 2]} intensity={0.4} color="#aaaacc" />
+        {/* Ambient чтобы тёмная сторона не была полностью чёрной */}
+        <ambientLight intensity={0.08} />
         <GlobeMesh />
       </Canvas>
     </div>
