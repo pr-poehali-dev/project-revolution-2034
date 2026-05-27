@@ -1,6 +1,7 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import earcut from "earcut";
 
 // Детальные контуры материков [lon, lat] — соответствуют стандартной карте мира
 const CONTINENTS: { name: string; rings: [number, number][][] }[] = [
@@ -160,21 +161,41 @@ function ll2v(lon: number, lat: number, r: number): THREE.Vector3 {
 }
 
 function buildContinents(r: number): THREE.BufferGeometry {
-  const pos: number[] = [];
+  const positions: number[] = [];
+  const indices: number[] = [];
+  let offset = 0;
+
   for (const { rings } of CONTINENTS) {
     for (const ring of rings) {
-      const n = ring.length;
-      if (n < 3) continue;
-      const origin = ll2v(ring[0][0], ring[0][1], r);
-      for (let i = 1; i < n - 1; i++) {
-        const a = ll2v(ring[i][0], ring[i][1], r);
-        const b = ll2v(ring[i + 1][0], ring[i + 1][1], r);
-        pos.push(origin.x, origin.y, origin.z, a.x, a.y, a.z, b.x, b.y, b.z);
+      if (ring.length < 3) continue;
+
+      // Проецируем полигон в 2D (lon/lat) для earcut
+      const flat: number[] = [];
+      for (const [lon, lat] of ring) {
+        flat.push(lon, lat);
+      }
+
+      const triIndices = earcut(flat, undefined, 2);
+      if (!triIndices || triIndices.length === 0) continue;
+
+      // Записываем вершины в 3D на сфере
+      const base = offset;
+      for (const [lon, lat] of ring) {
+        const v = ll2v(lon, lat, r);
+        positions.push(v.x, v.y, v.z);
+        offset++;
+      }
+
+      for (const idx of triIndices) {
+        indices.push(base + idx);
       }
     }
   }
+
   const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
   return geo;
 }
 
