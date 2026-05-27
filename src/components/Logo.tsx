@@ -1,4 +1,9 @@
+import { useLang } from "@/lib/i18n";
+
 export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
+  const { lang } = useLang();
+  const isEn = lang === "en";
+
   return (
     <svg
       viewBox="0 0 180 40"
@@ -13,7 +18,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
       <line x1="6" y1="12" x2="34" y2="12" stroke="white" strokeWidth="1.5" />
       <line x1="6" y1="28" x2="34" y2="28" stroke="white" strokeWidth="1.5" />
 
-      {/* REAL text */}
+      {/* Main text */}
       <text
         x="46"
         y="27"
@@ -23,10 +28,10 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
         fill="white"
         letterSpacing="2"
       >
-        РЕАЛ
+        {isEn ? "REAL" : "РЕАЛ"}
       </text>
 
-      {/* ГРУПП text — subtle */}
+      {/* Sub text */}
       <text
         x="46"
         y="38"
@@ -36,7 +41,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
         opacity="0.5"
         letterSpacing="3"
       >
-        ГРУПП
+        {isEn ? "GROUP" : "ГРУПП"}
       </text>
     </svg>
   );
