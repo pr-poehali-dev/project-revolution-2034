@@ -7,7 +7,7 @@ export function About() {
   const { about } = t;
 
   return (
-    <section id="about" className="py-24 md:py-36 relative">
+    <section id="about" className="py-24 md:py-36 relative z-10 bg-background">
       {/* subtle top border */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 

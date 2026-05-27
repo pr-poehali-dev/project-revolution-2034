@@ -7,7 +7,7 @@ export function Footer() {
   const { footer } = t;
 
   return (
-    <footer className="border-t border-border py-16 md:py-20">
+    <footer className="border-t border-border py-16 md:py-20 relative z-10 bg-background">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
 
