@@ -13,13 +13,12 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
     >
       {/* World map image */}
       <image
-        href="https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/89802caf-d4c7-4ccc-8a75-35350764c291.png"
+        href="https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/98dcee83-7f34-4fbc-a5dc-166406edb258.png"
         x="0"
         y="2"
         width="56"
         height="36"
         preserveAspectRatio="xMidYMid meet"
-        style={{ filter: "invert(1)" }}
       />
 
       {/* Main text */}
