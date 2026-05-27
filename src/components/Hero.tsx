@@ -1,4 +1,3 @@
-import { GL } from "./gl";
 import { Globe } from "./Globe";
 import { Pill } from "./Pill";
 import { Button } from "./ui/button";
@@ -12,7 +11,6 @@ export function Hero() {
 
   return (
     <div id="hero" className="flex flex-col h-svh justify-between relative z-10">
-      <GL hovering={hovering} />
       <Globe />
       <Header />
 
