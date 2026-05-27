@@ -18,7 +18,7 @@ export function Hero() {
         <Pill className="mb-6">{t.hero.pill}</Pill>
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-sentient">
           {t.hero.title1} <br />
-          <i className="font-light">{t.hero.title2}</i> {t.hero.title3}
+          {t.hero.title2} {t.hero.title3}
         </h1>
         <p className="font-mono text-sm sm:text-base text-foreground/60 text-balance mt-8 max-w-[440px] mx-auto">
           {t.hero.subtitle}
