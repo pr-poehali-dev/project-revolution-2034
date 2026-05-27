@@ -20,6 +20,46 @@ const translations = {
         "Выстраиваем надёжные торговые связи между странами — быстро, прозрачно и на выгодных условиях",
       button: "Начать сотрудничество",
     },
+    about: {
+      pill: "О КОМПАНИИ",
+      title: "Ваш партнёр в международной торговле",
+      subtitle:
+        "Реал Групп — международная торговая компания, которая помогает бизнесу выходить на глобальные рынки и выстраивать надёжные торговые цепочки по всему миру.",
+      services: {
+        title: "Направления",
+        items: [
+          {
+            icon: "Package",
+            name: "Экспорт и импорт",
+            desc: "Организуем поставки товаров между странами — от поиска контрагентов до финального расчёта",
+          },
+          {
+            icon: "Handshake",
+            name: "Торговое посредничество",
+            desc: "Соединяем покупателей и продавцов по всему миру, обеспечивая выгодные условия сделки",
+          },
+          {
+            icon: "Truck",
+            name: "Логистика и доставка",
+            desc: "Полный цикл перевозки: мультимодальные маршруты, таможенное оформление, страхование грузов",
+          },
+          {
+            icon: "FileText",
+            name: "Консалтинг ВЭД",
+            desc: "Помогаем с документами, таможней и регуляторными требованиями при выходе на зарубежные рынки",
+          },
+        ],
+      },
+      markets: {
+        title: "Рынки присутствия",
+        items: ["СНГ", "Европа", "Азия", "Ближний Восток", "Африка"],
+      },
+      stats: [
+        { value: "5", label: "регионов" },
+        { value: "4", label: "направления" },
+        { value: "24/7", label: "поддержка" },
+      ],
+    },
   },
   en: {
     nav: {
@@ -37,6 +77,46 @@ const translations = {
       subtitle:
         "Building reliable trade connections between countries — fast, transparent, and on favorable terms",
       button: "Start Cooperation",
+    },
+    about: {
+      pill: "ABOUT US",
+      title: "Your partner in international trade",
+      subtitle:
+        "Real Group is an international trading company that helps businesses access global markets and build reliable supply chains worldwide.",
+      services: {
+        title: "Services",
+        items: [
+          {
+            icon: "Package",
+            name: "Export & Import",
+            desc: "We organize cross-border goods delivery — from finding counterparties to final settlement",
+          },
+          {
+            icon: "Handshake",
+            name: "Trade Mediation",
+            desc: "Connecting buyers and sellers worldwide, ensuring favorable deal terms for both parties",
+          },
+          {
+            icon: "Truck",
+            name: "Logistics & Delivery",
+            desc: "Full-cycle transportation: multimodal routes, customs clearance, and cargo insurance",
+          },
+          {
+            icon: "FileText",
+            name: "Foreign Trade Consulting",
+            desc: "We assist with documents, customs, and regulatory requirements for entering foreign markets",
+          },
+        ],
+      },
+      markets: {
+        title: "Markets",
+        items: ["CIS", "Europe", "Asia", "Middle East", "Africa"],
+      },
+      stats: [
+        { value: "5", label: "regions" },
+        { value: "4", label: "services" },
+        { value: "24/7", label: "support" },
+      ],
     },
   },
 };
