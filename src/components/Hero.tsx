@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { Header } from "./Header";
 import { useLang } from "@/lib/i18n";
+import { GL } from "./gl";
 
 export function Hero() {
   const [hovering, setHovering] = useState(false);
@@ -10,6 +11,7 @@ export function Hero() {
 
   return (
     <div id="hero" className="flex flex-col h-svh justify-between relative z-10">
+      <GL hovering={hovering} />
       <Header />
 
       <div className="pb-16 mt-auto text-center relative">
