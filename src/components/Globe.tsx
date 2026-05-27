@@ -1,154 +1,13 @@
-import { useRef, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import earcut from "earcut";
 
-// Детальные контуры материков [lon, lat] — соответствуют стандартной карте мира
-const CONTINENTS: { name: string; rings: [number, number][][] }[] = [
-  {
-    name: "North America",
-    rings: [[
-      [-168, 72], [-155, 72], [-140, 74], [-125, 76], [-100, 76], [-85, 74],
-      [-75, 72], [-65, 68], [-60, 62], [-64, 58], [-66, 52], [-60, 47],
-      [-52, 46], [-55, 42], [-65, 40], [-72, 40], [-76, 34], [-80, 28],
-      [-82, 24], [-88, 18], [-90, 14], [-85, 10], [-80, 8], [-76, 8],
-      [-77, 12], [-82, 14], [-84, 16], [-90, 18], [-95, 20], [-100, 20],
-      [-105, 22], [-110, 24], [-115, 30], [-118, 34], [-120, 38], [-122, 40],
-      [-124, 46], [-126, 50], [-130, 56], [-136, 60], [-142, 62], [-148, 62],
-      [-155, 58], [-158, 56], [-162, 56], [-165, 60], [-168, 64], [-168, 72],
-    ]],
-  },
-  {
-    name: "Greenland",
-    rings: [[
-      [-68, 76], [-52, 76], [-38, 78], [-22, 80], [-18, 82], [-28, 84],
-      [-40, 84], [-52, 84], [-60, 82], [-64, 80], [-68, 78], [-68, 76],
-    ]],
-  },
-  {
-    name: "South America",
-    rings: [[
-      [-80, 10], [-76, 8], [-72, 12], [-66, 12], [-62, 12], [-60, 8],
-      [-52, 4], [-50, 2], [-50, -2], [-48, -6], [-38, -8], [-35, -8],
-      [-34, -12], [-36, -18], [-38, -22], [-40, -28], [-44, -32],
-      [-50, -34], [-54, -36], [-58, -40], [-62, -44], [-65, -50],
-      [-68, -54], [-66, -56], [-68, -56], [-72, -52], [-74, -46],
-      [-72, -40], [-68, -32], [-70, -24], [-70, -16], [-74, -10],
-      [-76, -4], [-78, 0], [-80, 4], [-80, 10],
-    ]],
-  },
-  {
-    name: "Europe",
-    rings: [[
-      [-10, 36], [-6, 36], [0, 38], [4, 40], [8, 38], [14, 38],
-      [16, 40], [18, 42], [22, 40], [26, 42], [28, 44], [30, 46],
-      [28, 50], [24, 52], [22, 56], [24, 58], [22, 62], [18, 64],
-      [14, 68], [18, 70], [22, 72], [16, 72], [8, 70], [4, 66],
-      [0, 62], [-4, 58], [-6, 54], [-4, 50], [-2, 48], [-4, 44],
-      [-8, 42], [-10, 40], [-10, 36],
-    ]],
-  },
-  {
-    name: "Scandinavia",
-    rings: [[
-      [5, 58], [8, 58], [12, 56], [16, 58], [18, 62], [16, 66],
-      [18, 70], [22, 72], [28, 72], [30, 70], [26, 66], [28, 62],
-      [26, 60], [22, 58], [18, 58], [14, 58], [10, 56], [5, 58],
-    ]],
-  },
-  {
-    name: "Africa",
-    rings: [[
-      [-18, 16], [-16, 20], [-18, 24], [-14, 28], [-10, 30],
-      [-4, 32], [0, 34], [4, 36], [10, 38], [16, 38], [24, 38],
-      [32, 32], [36, 28], [38, 22], [40, 16], [42, 12], [44, 12],
-      [44, 8], [42, 2], [40, -2], [42, -8], [40, -14], [36, -22],
-      [32, -30], [28, -34], [24, -34], [18, -34], [14, -30],
-      [10, -24], [8, -18], [6, -12], [4, -6], [2, 0], [4, 4],
-      [6, 6], [2, 8], [-2, 6], [-6, 4], [-8, 4], [-14, 10],
-      [-16, 12], [-18, 16],
-    ]],
-  },
-  {
-    name: "Madagascar",
-    rings: [[
-      [44, -12], [46, -12], [50, -16], [50, -22], [48, -26],
-      [44, -26], [44, -20], [44, -14], [44, -12],
-    ]],
-  },
-  {
-    name: "Asia",
-    rings: [[
-      [26, 42], [30, 46], [32, 48], [36, 48], [38, 44], [42, 42],
-      [44, 42], [46, 40], [50, 42], [52, 44], [56, 44], [60, 44],
-      [60, 38], [62, 34], [58, 30], [56, 26], [60, 24], [62, 22],
-      [64, 22], [66, 24], [68, 24], [68, 20], [70, 16], [72, 10],
-      [76, 8], [80, 8], [80, 10], [82, 12], [86, 14], [90, 14],
-      [92, 10], [95, 8], [98, 6], [100, 2], [104, 2], [106, 2],
-      [108, 4], [110, 6], [114, 6], [116, 6], [120, 10], [120, 18],
-      [122, 24], [124, 28], [126, 34], [128, 38], [130, 40],
-      [132, 44], [134, 48], [138, 50], [142, 52], [144, 56],
-      [142, 60], [138, 62], [132, 64], [125, 68], [118, 72],
-      [106, 74], [94, 78], [80, 78], [66, 78], [54, 76],
-      [42, 72], [34, 68], [30, 64], [28, 58], [26, 52],
-      [28, 50], [30, 46], [28, 44], [26, 42],
-    ]],
-  },
-  {
-    name: "Arabian Peninsula",
-    rings: [[
-      [36, 28], [38, 24], [40, 20], [42, 16], [44, 14], [46, 14],
-      [48, 16], [50, 18], [52, 22], [54, 24], [56, 22], [58, 20],
-      [58, 16], [56, 12], [52, 12], [46, 12], [42, 12], [40, 16],
-      [38, 20], [36, 24], [36, 28],
-    ]],
-  },
-  {
-    name: "Indian subcontinent",
-    rings: [[
-      [68, 24], [70, 22], [72, 20], [74, 16], [76, 10], [78, 8],
-      [80, 8], [82, 10], [84, 14], [86, 18], [88, 22], [90, 22],
-      [88, 18], [86, 14], [84, 12], [82, 16], [80, 18], [78, 16],
-      [76, 12], [74, 14], [72, 16], [70, 18], [68, 22], [68, 24],
-    ]],
-  },
-  {
-    name: "Southeast Asia islands",
-    rings: [[
-      [95, 6], [98, 4], [102, 2], [104, 2], [106, 0], [108, -2],
-      [110, -4], [112, -6], [112, -8], [108, -8], [106, -6],
-      [104, -4], [102, -2], [100, 0], [98, 2], [95, 4], [95, 6],
-    ]],
-  },
-  {
-    name: "Australia",
-    rings: [[
-      [114, -22], [116, -18], [118, -16], [122, -14], [126, -14],
-      [130, -12], [132, -12], [136, -12], [138, -14], [140, -16],
-      [142, -18], [146, -18], [148, -20], [150, -22], [152, -26],
-      [154, -28], [154, -32], [152, -38], [148, -40], [144, -40],
-      [140, -38], [136, -36], [130, -34], [126, -34], [122, -34],
-      [116, -32], [114, -28], [114, -24], [114, -22],
-    ]],
-  },
-  {
-    name: "New Zealand",
-    rings: [[
-      [172, -34], [174, -36], [176, -38], [178, -38], [178, -40],
-      [176, -44], [174, -44], [172, -44], [170, -44], [168, -46],
-      [168, -44], [170, -42], [172, -40], [172, -38], [172, -36], [172, -34],
-    ]],
-  },
-  {
-    name: "Antarctica",
-    rings: [[
-      [-180, -72], [-150, -70], [-120, -68], [-90, -68], [-60, -68],
-      [-30, -70], [0, -70], [30, -70], [60, -68], [90, -68],
-      [120, -68], [150, -68], [180, -72], [180, -90],
-      [-180, -90], [-180, -72],
-    ]],
-  },
-];
+type Ring = number[][];
+type GeoPolygon = { type: "Polygon"; coordinates: Ring[] };
+type GeoMultiPolygon = { type: "MultiPolygon"; coordinates: Ring[][] };
+type GeoFeature = { type: "Feature"; geometry: GeoPolygon | GeoMultiPolygon };
+type GeoJSON = { type: "FeatureCollection"; features: GeoFeature[] };
 
 function ll2v(lon: number, lat: number, r: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -160,34 +19,57 @@ function ll2v(lon: number, lat: number, r: number): THREE.Vector3 {
   );
 }
 
-function buildContinents(r: number): THREE.BufferGeometry {
+function buildGeometryFromGeoJSON(geojson: GeoJSON, r: number): THREE.BufferGeometry {
   const positions: number[] = [];
   const indices: number[] = [];
   let offset = 0;
 
-  for (const { rings } of CONTINENTS) {
-    for (const ring of rings) {
-      if (ring.length < 3) continue;
+  function processPolygon(rings: Ring[]) {
+    if (!rings || rings.length === 0) return;
+    const outer = rings[0];
+    if (outer.length < 3) return;
 
-      // Проецируем полигон в 2D (lon/lat) для earcut
-      const flat: number[] = [];
-      for (const [lon, lat] of ring) {
-        flat.push(lon, lat);
+    // Собираем flat массив + holeIndices для earcut
+    const flat: number[] = [];
+    const holeIndices: number[] = [];
+
+    for (const coord of outer) {
+      flat.push(coord[0], coord[1]);
+    }
+
+    for (let h = 1; h < rings.length; h++) {
+      holeIndices.push(flat.length / 2);
+      for (const coord of rings[h]) {
+        flat.push(coord[0], coord[1]);
       }
+    }
 
-      const triIndices = earcut(flat, undefined, 2);
-      if (!triIndices || triIndices.length === 0) continue;
+    const triIndices = earcut(flat, holeIndices.length ? holeIndices : undefined, 2);
+    if (!triIndices || triIndices.length === 0) return;
 
-      // Записываем вершины в 3D на сфере
-      const base = offset;
-      for (const [lon, lat] of ring) {
-        const v = ll2v(lon, lat, r);
-        positions.push(v.x, v.y, v.z);
-        offset++;
-      }
+    const base = offset;
+    const totalVerts = flat.length / 2;
+    for (let i = 0; i < totalVerts; i++) {
+      const lon = flat[i * 2];
+      const lat = flat[i * 2 + 1];
+      const v = ll2v(lon, lat, r);
+      positions.push(v.x, v.y, v.z);
+      offset++;
+    }
 
-      for (const idx of triIndices) {
-        indices.push(base + idx);
+    for (const idx of triIndices) {
+      indices.push(base + idx);
+    }
+  }
+
+  for (const feature of geojson.features) {
+    const geom = feature.geometry;
+    if (!geom) continue;
+    if (geom.type === "Polygon") {
+      processPolygon(geom.coordinates);
+    } else if (geom.type === "MultiPolygon") {
+      for (const poly of geom.coordinates) {
+        processPolygon(poly);
       }
     }
   }
@@ -199,9 +81,12 @@ function buildContinents(r: number): THREE.BufferGeometry {
   return geo;
 }
 
-function GlobeMesh() {
+function GlobeMesh({ geojson }: { geojson: GeoJSON | null }) {
   const groupRef = useRef<THREE.Group>(null);
-  const continentGeo = useMemo(() => buildContinents(2.015), []);
+
+  const continentGeo = geojson
+    ? buildGeometryFromGeoJSON(geojson, 2.012)
+    : null;
 
   useFrame((_, delta) => {
     if (groupRef.current) groupRef.current.rotation.y += delta * 0.1;
@@ -209,22 +94,31 @@ function GlobeMesh() {
 
   return (
     <group ref={groupRef}>
-      {/* Основной шар — тёмно-серый океан */}
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
         <meshBasicMaterial color="#000000" />
       </mesh>
-      <mesh geometry={continentGeo}>
-        <meshBasicMaterial
-          color="#ffffff"
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {continentGeo && (
+        <mesh geometry={continentGeo}>
+          <meshBasicMaterial color="#ffffff" side={THREE.FrontSide} />
+        </mesh>
+      )}
     </group>
   );
 }
 
 export function Globe() {
+  const [geojson, setGeojson] = useState<GeoJSON | null>(null);
+
+  useEffect(() => {
+    fetch(
+      "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_land.geojson"
+    )
+      .then((r) => r.json())
+      .then((data) => setGeojson(data as GeoJSON))
+      .catch(() => {});
+  }, []);
+
   return (
     <div
       style={{
@@ -244,12 +138,10 @@ export function Globe() {
         style={{ width: "100%", height: "100%" }}
       >
         <color attach="background" args={["#000000"]} />
-        {/* Главный блик сверху-слева как на референсе */}
-        <directionalLight position={[-3, 4, 3]} intensity={4} color="#ffffff" />
-        <directionalLight position={[4, -1, 2]} intensity={1.0} color="#ccccdd" />
-        <ambientLight intensity={0.4} />
-        <GlobeMesh />
+        <GlobeMesh geojson={geojson} />
       </Canvas>
     </div>
   );
 }
+
+export default Globe;
