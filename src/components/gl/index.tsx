@@ -34,7 +34,7 @@ export const GL = ({ hovering }: { hovering: boolean }) => {
   } = controls;
 
   return (
-    <div id="webgl">
+    <div id="webgl" style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}>
       <Canvas
         camera={{
           position: [
