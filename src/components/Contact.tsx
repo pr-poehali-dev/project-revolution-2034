@@ -43,7 +43,7 @@ export function Contact() {
       {/* world map background */}
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.3] pointer-events-none"
-        style={{ backgroundImage: "url('https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/45c723e6-57c7-448c-bcd0-09d3a9ccac9c.png')" }}
+        style={{ backgroundImage: "url('https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/01c345e7-57b6-4a94-a96b-f3cb12f4f193.png')" }}
       />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
