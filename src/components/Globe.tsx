@@ -1,69 +1,14 @@
-import { useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
+import { TextureLoader } from "three";
 
-function isLand(lat: number, lon: number): boolean {
-  if (lat > 25 && lat < 72 && lon > -168 && lon < -52) return true;
-  if (lat > 60 && lat < 84 && lon > -58 && lon < -17) return true;
-  if (lat > 7 && lat < 25 && lon > -92 && lon < -60) return true;
-  if (lat > -56 && lat < 12 && lon > -82 && lon < -34) return true;
-  if (lat > 36 && lat < 72 && lon > -10 && lon < 40) return true;
-  if (lat > 50 && lat < 60 && lon > -8 && lon < 2) return true;
-  if (lat > 63 && lat < 67 && lon > -24 && lon < -13) return true;
-  if (lat > 50 && lat < 78 && lon > 28 && lon < 180) return true;
-  if (lat > 42 && lat < 55 && lon > 28 && lon < 140) return true;
-  if (lat > 12 && lat < 42 && lon > 26 && lon < 62) return true;
-  if (lat > 8 && lat < 35 && lon > 68 && lon < 92) return true;
-  if (lat > 0 && lat < 55 && lon > 90 && lon < 145) return true;
-  if (lat > 30 && lat < 46 && lon > 129 && lon < 146) return true;
-  if (lat > -35 && lat < 37 && lon > -18 && lon < 52) return true;
-  if (lat > -26 && lat < -12 && lon > 43 && lon < 51) return true;
-  if (lat > -40 && lat < -10 && lon > 113 && lon < 155) return true;
-  if (lat > -47 && lat < -34 && lon > 166 && lon < 178) return true;
-  if (lat < -70) return true;
-  return false;
-}
-
-function toXYZ(lat: number, lon: number, r: number): THREE.Vector3 {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lon + 180) * (Math.PI / 180);
-  return new THREE.Vector3(
-    r * Math.sin(phi) * Math.cos(theta),
-    r * Math.cos(phi),
-    r * Math.sin(phi) * Math.sin(theta)
-  );
-}
+const MAP_URL =
+  "https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/3b0295cd-edd2-4a35-97a6-055236eb7347.png";
 
 function GlobeMesh() {
   const groupRef = useRef<THREE.Group>(null);
-
-  const landPoints = useMemo(() => {
-    const r = 2.0;
-    const pts: THREE.Vector3[] = [];
-    const step = 2.0;
-    for (let lat = -88; lat <= 88; lat += step) {
-      for (let lon = -180; lon < 180; lon += step) {
-        if (isLand(lat, lon)) {
-          pts.push(toXYZ(lat, lon, r));
-        }
-      }
-    }
-    return new THREE.BufferGeometry().setFromPoints(pts);
-  }, []);
-
-  const oceanPoints = useMemo(() => {
-    const r = 2.0;
-    const pts: THREE.Vector3[] = [];
-    const step = 5.0;
-    for (let lat = -88; lat <= 88; lat += step) {
-      for (let lon = -180; lon < 180; lon += step) {
-        if (!isLand(lat, lon)) {
-          pts.push(toXYZ(lat, lon, r));
-        }
-      }
-    }
-    return new THREE.BufferGeometry().setFromPoints(pts);
-  }, []);
+  const texture = useLoader(TextureLoader, MAP_URL);
 
   useFrame((_, delta) => {
     if (groupRef.current) groupRef.current.rotation.y += delta * 0.12;
@@ -71,14 +16,22 @@ function GlobeMesh() {
 
   return (
     <group ref={groupRef}>
-      {/* Океан — едва видимые точки, чтобы шар читался как сфера */}
-      <points geometry={oceanPoints}>
-        <pointsMaterial color="#ffffff" size={0.02} transparent opacity={0.12} sizeAttenuation />
-      </points>
-      {/* Суша — яркие точки как в лого */}
-      <points geometry={landPoints}>
-        <pointsMaterial color="#ffffff" size={0.025} transparent opacity={0.95} sizeAttenuation />
-      </points>
+      {/* Сфера океана — тёмно-серая */}
+      <mesh>
+        <sphereGeometry args={[2.0, 64, 64]} />
+        <meshBasicMaterial color="#111111" />
+      </mesh>
+      {/* Материки — белая текстура карты, прозрачный фон */}
+      <mesh>
+        <sphereGeometry args={[2.01, 64, 64]} />
+        <meshBasicMaterial
+          map={texture}
+          transparent
+          alphaMap={texture}
+          color="#ffffff"
+          depthWrite={false}
+        />
+      </mesh>
     </group>
   );
 }
