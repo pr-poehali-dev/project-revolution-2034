@@ -96,11 +96,11 @@ function GlobeMesh({ geojson }: { geojson: GeoJSON | null }) {
     <group ref={groupRef}>
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
-        <meshBasicMaterial color="#000000" />
+        <meshBasicMaterial color="#1c1c2e" />
       </mesh>
       {continentGeo && (
         <mesh geometry={continentGeo}>
-          <meshBasicMaterial color="#ffffff" side={THREE.FrontSide} />
+          <meshBasicMaterial color="#d8d8d8" side={THREE.FrontSide} />
         </mesh>
       )}
     </group>
