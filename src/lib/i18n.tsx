@@ -13,7 +13,7 @@ const translations = {
     },
     hero: {
       pill: "МЕЖДУНАРОДНАЯ ТОРГОВЛЯ",
-      title1: "Реал Групп —",
+      title1: "Реал Групп",
       title2: "глобальная",
       title3: "торговля",
       subtitle:
@@ -101,7 +101,7 @@ const translations = {
     },
     hero: {
       pill: "INTERNATIONAL TRADE",
-      title1: "Real Group —",
+      title1: "Real Group",
       title2: "global",
       title3: "trade",
       subtitle:
