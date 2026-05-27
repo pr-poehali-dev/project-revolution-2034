@@ -65,7 +65,7 @@ const CONTINENTS: [number, number][][] = [
 
 function ll2v(lon: number, lat: number, r: number): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lon + 180) * (Math.PI / 180);
+  const theta = lon * (Math.PI / 180);
   return new THREE.Vector3(
     r * Math.sin(phi) * Math.cos(theta),
     r * Math.cos(phi),
