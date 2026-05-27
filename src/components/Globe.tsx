@@ -1,61 +1,44 @@
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
+const MAP_URL =
+  "https://cdn.poehali.dev/projects/17ebc9d7-b892-431e-a0b0-87f4e8af47af/bucket/98dcee83-7f34-4fbc-a5dc-166406edb258.png";
+
 function GlobeMesh() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const pointsRef = useRef<THREE.Points>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const texture = useTexture(MAP_URL);
 
   useFrame((_, delta) => {
-    if (meshRef.current) meshRef.current.rotation.y += delta * 0.12;
-    if (pointsRef.current) pointsRef.current.rotation.y += delta * 0.12;
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.1;
   });
 
-  const dotGeometry = useMemo(() => {
-    const radius = 2.2;
-    const rows = 80;
-    const positions: number[] = [];
-
-    for (let lat = 0; lat < rows; lat++) {
-      const phi = (Math.PI * lat) / rows;
-      const dotsInRow = Math.floor(Math.sin(phi) * rows * 1.5);
-      for (let dot = 0; dot < dotsInRow; dot++) {
-        const theta = (2 * Math.PI * dot) / dotsInRow;
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.cos(phi);
-        const z = radius * Math.sin(phi) * Math.sin(theta);
-        positions.push(x, y, z);
-      }
-    }
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-    return geo;
-  }, []);
-
   return (
-    <group>
-      <mesh ref={meshRef}>
+    <group ref={groupRef}>
+      <mesh>
         <sphereGeometry args={[2.2, 64, 64]} />
+        <meshStandardMaterial color="#000000" transparent opacity={0.18} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[2.21, 64, 64]} />
         <meshStandardMaterial
-          color="#111111"
+          map={texture}
           transparent
-          opacity={0.15}
-          wireframe={false}
+          opacity={0.55}
+          alphaTest={0.01}
+          depthWrite={false}
+          onBeforeCompile={(shader) => {
+            shader.fragmentShader = shader.fragmentShader.replace(
+              "#include <color_fragment>",
+              `#include <color_fragment>
+              float brightness = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+              diffuseColor.a *= brightness;
+              diffuseColor.rgb = vec3(1.0);`
+            );
+          }}
         />
       </mesh>
-      <points ref={pointsRef} geometry={dotGeometry}>
-        <pointsMaterial
-          color="#ffffff"
-          size={0.025}
-          transparent
-          opacity={0.5}
-          sizeAttenuation
-        />
-      </points>
     </group>
   );
 }
@@ -75,8 +58,7 @@ export function Globe() {
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} />
+        <ambientLight intensity={1.2} />
         <GlobeMesh />
       </Canvas>
     </div>
