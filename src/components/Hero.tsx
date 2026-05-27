@@ -1,4 +1,3 @@
-import { Globe } from "./Globe";
 import { Pill } from "./Pill";
 import { Button } from "./ui/button";
 import { useState } from "react";
@@ -11,7 +10,6 @@ export function Hero() {
 
   return (
     <div id="hero" className="flex flex-col h-svh justify-between relative z-10">
-      <Globe />
       <Header />
 
       <div className="pb-16 mt-auto text-center relative">
