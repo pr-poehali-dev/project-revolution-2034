@@ -44,6 +44,12 @@ def handler(event: dict, context) -> dict:
         <tr><td style="padding: 8px; color: #666;"><b>Email:</b></td><td style="padding: 8px;"><a href="mailto:{email}">{email}</a></td></tr>
         <tr style="background:#f9f9f9"><td style="padding: 8px; color: #666; vertical-align:top;"><b>Сообщение:</b></td><td style="padding: 8px;">{message}</td></tr>
       </table>
+      <div style="margin-top: 24px;">
+        <a href="mailto:{email}?subject=Re: Ваша заявка на сайте Real Group"
+           style="display:inline-block; padding: 12px 28px; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-family: Arial, sans-serif; font-size: 14px; border-radius: 4px;">
+          Ответить клиенту
+        </a>
+      </div>
     </div>
     """
 
@@ -51,6 +57,7 @@ def handler(event: dict, context) -> dict:
     msg["Subject"] = f"Заявка с сайта: {name} ({company})" if company else f"Заявка с сайта: {name}"
     msg["From"] = "noreply@poehali.dev"
     msg["To"] = contact_email
+    msg["Reply-To"] = email
 
     msg.attach(MIMEText(html_body, "html"))
 
