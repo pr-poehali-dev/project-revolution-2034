@@ -118,16 +118,15 @@ function GlobeMesh() {
 
   return (
     <group ref={groupRef}>
+      {/* Чёрный океан */}
       <mesh>
-        <sphereGeometry args={[1.98, 64, 64]} />
-        <meshBasicMaterial color="#0a0a0a" />
+        <sphereGeometry args={[2.0, 64, 64]} />
+        <meshBasicMaterial color="#000000" side={THREE.BackSide} />
       </mesh>
+      {/* Белые материки поверх */}
       <mesh geometry={continentGeo}>
-        <meshBasicMaterial color="#ffffff" side={THREE.FrontSide} />
+        <meshBasicMaterial color="#ffffff" side={THREE.DoubleSide} depthWrite={true} />
       </mesh>
-      <lineSegments geometry={edgeGeo}>
-        <lineBasicMaterial color="#ffffff" transparent opacity={0.6} />
-      </lineSegments>
     </group>
   );
 }
