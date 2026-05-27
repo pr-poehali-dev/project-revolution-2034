@@ -10,7 +10,7 @@ export function Hero() {
   const { t } = useLang();
 
   return (
-    <div className="flex flex-col h-svh justify-between relative z-10">
+    <div id="hero" className="flex flex-col h-svh justify-between relative z-10">
       <GL hovering={hovering} />
       <Header />
 
