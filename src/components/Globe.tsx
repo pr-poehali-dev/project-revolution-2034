@@ -94,29 +94,20 @@ function GlobeMesh({ geojson }: { geojson: GeoJSON | null }) {
 
   return (
     <group ref={groupRef}>
-      {/* Океан — белый, матовый с бликом */}
+      {/* Океан — белый */}
       <mesh>
         <sphereGeometry args={[2.0, 128, 128]} />
-        <meshStandardMaterial
-          color="#ffffff"
-          roughness={0.6}
-          metalness={0.0}
-        />
+        <meshBasicMaterial color="#ffffff" />
       </mesh>
-      {/* Материки — чёрные, чуть глянцевые */}
+      {/* Материки — чёрные */}
       {continentGeo && (
         <mesh geometry={continentGeo}>
-          <meshStandardMaterial
-            color="#111111"
-            roughness={0.5}
-            metalness={0.1}
-            side={THREE.FrontSide}
-          />
+          <meshBasicMaterial color="#111111" side={THREE.FrontSide} />
         </mesh>
       )}
       {/* Тонкий контур по краю */}
       <mesh>
-        <sphereGeometry args={[2.03, 64, 64]} />
+        <sphereGeometry args={[2.04, 64, 64]} />
         <meshBasicMaterial color="#111111" side={THREE.BackSide} />
       </mesh>
     </group>
@@ -155,12 +146,6 @@ export function Globe() {
         style={{ width: "100%", height: "100%" }}
       >
         <color attach="background" args={["#ffffff"]} />
-        {/* Основной свет сверху-слева — создаёт блик */}
-        <directionalLight position={[-4, 5, 4]} intensity={1.8} color="#ffffff" />
-        {/* Мягкая заливка с противоположной стороны */}
-        <directionalLight position={[4, -3, -4]} intensity={0.3} color="#cccccc" />
-        {/* Ambient чтобы тёмная сторона не была чисто чёрной */}
-        <ambientLight intensity={0.25} />
         <GlobeMesh geojson={geojson} />
       </Canvas>
     </div>
