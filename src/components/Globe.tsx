@@ -111,9 +111,10 @@ export function Globe() {
   const [geojson, setGeojson] = useState<GeoJSON | null>(null);
 
   useEffect(() => {
-    fetch(
-      "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_land.geojson"
-    )
+    // Сначала получаем CDN URL через backend, потом грузим сам GeoJSON
+    fetch("https://functions.poehali.dev/feb5a455-da85-4f36-8331-24ecfa953c33")
+      .then((r) => r.json())
+      .then(({ url }) => fetch(url))
       .then((r) => r.json())
       .then((data) => setGeojson(data as GeoJSON))
       .catch(() => {});
